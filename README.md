@@ -8,7 +8,33 @@ to join the previously all-male boarding school.
 
 This project analyzes the impact of gender integration at Falcon College, which transitioned from an all-male institution to coeducational in 2017. The study examines enrollment patterns, academic performance, and sixth form participation before and after integration.
 
-Gender Integration stuff...............
+## Data Preparation
+
+### Data Cleaning and Preprocessing
+
+To prepare the data for analysis, I performed several key data cleaning and preparation steps:
+
+1. **Column Name Standardization**:
+   - Standardized enrollment data columns to ['Year', 'Male', 'Female']
+   - Added a calculated 'Total' column (sum of Male and Female students)
+   - Standardized sixth form data columns to ['Year', 'L6_Male', 'L6_Female', 'U6_Male', 'U6_Female']
+   - Renamed pass rate data columns to ['Year', 'IGCSE', 'AS', 'A_Level']
+
+2. **Derived Metrics**:
+   - Created 'Total_L6' (sum of L6_Male and L6_Female)
+   - Created 'Total_U6' (sum of U6_Male and U6_Female)
+   - Calculated 'Total' sixth form enrollment (sum of Total_L6 and Total_U6)
+
+3. **Integration Period Identification**:
+   - Determined that gender integration began in 2017 (first year with Female > 0)
+   - Added a 'Period' column to all datasets, categorizing data into 'Pre-Integration' (2011-2016) and 'Post-Integration' (2017-2023)
+
+4. **Data Validation**:
+   - Verified data completeness across all years (2011-2023)
+   - Confirmed consistency in metrics across datasets
+   - Ensured proper data types for all variables
+
+This data preparation created a structured foundation for subsequent exploratory and statistical analyses, enabling direct comparison between pre and post-integration periods.
 
 Exploratory Data Analysis (EDA)
 
@@ -270,4 +296,176 @@ The most notable patterns are:
 3. Changes in enrollment metrics (total, L6, U6) were not statistically significant
 
 These findings suggest that gender integration had its most measurable impact on academic performance metrics rather than on enrollment figures, with differing effects across academic levels.
+
+### Advanced Statistical Analysis
+
+#### Hypothesis Testing with Confidence Intervals
+
+I conducted formal hypothesis testing to rigorously assess differences between pre and post-integration periods:
+
+**Null Hypothesis (H₀)**: There is no difference in metrics between pre and post gender integration periods.  
+**Alternative Hypothesis (H₁)**: There is a difference in metrics between pre and post gender integration periods.
+
+**Total Enrollment:**  
+There is no statistically significant difference in Total Enrollment between pre and post integration periods (t(7.3)=-1.016, p=0.3421). Enrollment increased by 5.11% with a medium effect size (Cohen's d=0.53). 95% CI [-28.37, 71.79]
+
+**IGCSE Pass Rate:**  
+There is a statistically significant difference in IGCSE Pass Rate between pre and post integration periods (t(10.0)=2.539, p=0.0294). Pass rates decreased by 5.79% with a large effect size (Cohen's d=1.47). 95% CI [-8.76, -0.57]
+
+**AS Level Pass Rate:**  
+There is no statistically significant difference in AS Level Pass Rate between pre and post integration periods (t(9.9)=0.809, p=0.4375). Pass rates decreased by 2.04% with a small effect size (Cohen's d=0.47). 95% CI [-6.26, 2.93]
+
+**A Level Pass Rate:**  
+There is no statistically significant difference in A Level Pass Rate between pre and post integration periods (t(10.0)=-1.800, p=0.1020). Pass rates increased by 3.54% with a large effect size (Cohen's d=1.04). 95% CI [-0.75, 7.09]
+
+The confidence intervals provide additional context: while IGCSE pass rates show a statistically significant decline (CI excludes zero), A Level pass rates show a strong positive effect that approaches but doesn't quite reach significance at the conventional p<0.05 threshold.
+
+#### Two-Way ANOVA Analysis
+
+To understand potential interaction effects between integration period and examination type, I conducted a two-way ANOVA:
+
+| Factor | Sum of Squares | df | F-value | p-value |
+|--------|---------------|-----|---------|---------|
+| Period | 10.03 | 1.0 | 0.936 | 0.341 |
+| Exam Type | 1065.06 | 2.0 | 49.692 | <0.001 |
+| Period × Exam Type | 93.72 | 2.0 | 4.373 | 0.022 |
+| Residual | 321.50 | 30.0 | | |
+
+The ANOVA results reveal:
+
+1. **Period Effect**: The main effect of integration period alone was not statistically significant (p=0.341)
+2. **Exam Type Effect**: There was a highly significant difference between exam types (p<0.001)
+3. **Interaction Effect**: Crucially, the interaction between period and exam type was statistically significant (p=0.022)
+
+This significant interaction confirms that gender integration had differential effects across academic levels—a finding consistent with our earlier observations that IGCSE performance decreased while A Level performance improved. The interaction effect explains why analyzing each exam type separately revealed different patterns.
+
+This analysis provides strong statistical evidence that gender integration created a redistribution of academic outcomes across different examination levels, rather than a uniform effect across all academics.
+
+### Advanced Analysis Techniques
+
+To strengthen causal inferences about the impact of gender integration, I employed several advanced analytical techniques beyond basic statistical testing.
+
+#### Difference-in-Differences Analysis
+
+I used difference-in-differences (DiD) analysis to compare changes in IGCSE and A Level pass rates, treating IGCSE as the "control" group and A Level as the "treatment" group, with gender integration as the intervention.
+
+**Raw DiD Estimate:**
+- IGCSE Pass Rate Change: -4.67 percentage points
+- A Level Pass Rate Change: +3.17 percentage points
+- Difference-in-Differences Estimate: +7.83 percentage points
+
+**Regression-Based DiD Analysis:**
+
+| Coefficient | Estimate | Std Error | t-value | p-value | [95% Conf. Interval] |
+|-------------|----------|-----------|---------|---------|----------------------|
+| Intercept | 80.67 | 1.27 | 63.42 | 0.000 | [78.01, 83.32] |
+| Post-integration | -4.67 | 1.80 | -2.59 | 0.017 | [-8.42, -0.91] |
+| Is_alevel | 8.67 | 1.80 | 4.82 | 0.000 | [4.91, 12.42] |
+| Interaction | 7.83 | 2.54 | 3.08 | 0.006 | [2.53, 13.14] |
+
+The DiD analysis provides strong evidence (p=0.006) that gender integration had a significantly different effect on A Level performance compared to IGCSE performance. The positive interaction coefficient (7.83) indicates that relative to IGCSE results, A Level performance improved by 7.83 percentage points after gender integration.
+
+This finding supports the hypothesis that gender integration created differential impacts across academic levels, with advanced studies benefiting while foundation studies faced challenges.
+
+#### Regression Discontinuity Design
+
+I implemented a regression discontinuity design (RDD) to estimate the immediate effect of gender integration on A Level pass rates, using time (centered at the integration year) as the running variable:
+
+**RDD Estimate for A Level Pass Rate:** +2.55 percentage points
+**Pre-Integration Slope:** +0.40 (slight upward trend before integration)
+**Post-Integration Slope:** -0.31 (slight downward trend after the initial increase)
+
+The RDD analysis suggests an immediate positive shift in A Level pass rates at the point of integration, though the effect moderated somewhat in subsequent years.
+
+#### Predictive Modeling for Future Trends
+
+Using time series analysis (ARIMA modeling), I forecasted enrollment trends for the next five years:
+
+**Total Enrollment Forecast:**
+- Year 2024: 496 students
+- Year 2025: 494 students
+- Year 2026: 493 students
+- Year 2027: 493 students
+- Year 2028: 493 students
+
+**Female Percentage Forecast:**
+- Year 2024: 28.6%
+- Year 2025: 27.7%
+- Year 2026: 26.8%
+- Year 2027: 26.0%
+- Year 2028: 25.3%
+
+The forecasting model suggests that total enrollment will stabilize around 493-496 students, while the female percentage may gradually decrease to approximately 25% by 2028. This suggests the college may be approaching a new equilibrium state where enrollment growth has plateaued and gender proportions are stabilizing.
+
+These advanced analytical techniques provide complementary evidence for causal impacts of gender integration while offering insights into potential future trends at Falcon College.
+
+## Executive Summary
+
+This study analyzes the impact of gender integration at Falcon College, which transitioned from an all-male institution to coeducational in 2017. Using data from 2011 to 2023, I examined enrollment patterns, academic performance, and sixth form participation before and after integration.
+
+Key findings reveal that gender integration had complex and varied effects: total enrollment increased by 5.11%, with female enrollment steadily growing while male enrollment declined. Academic performance showed differentiated impacts across examination levels—IGCSE pass rates significantly decreased by 5.79% (p=0.0294), while A Level pass rates increased by 3.54% (not statistically significant but with a large effect size). Advanced statistical techniques including difference-in-differences analysis confirm that integration had significantly different effects across academic levels (p=0.006).
+
+The results demonstrate that educational institutions implementing gender integration should anticipate multifaceted impacts and prepare strategies to manage the transition, particularly at foundation academic levels.
+
+## Conclusions and Discussion
+
+The analysis of Falcon College's gender integration reveals several important patterns and insights:
+
+1. **Successful Expansion of Educational Access**: The steady growth in female enrollment from zero to approximately 150 students over seven years demonstrates significant demand for girls' education at this institution. This expansion more than offset the decline in male enrollment, resulting in overall growth.
+
+2. **Transition Period Variability**: The increased variability in enrollment and academic metrics post-integration suggests the college experienced a transition period with greater fluctuations before establishing new patterns.
+
+3. **Differential Academic Impact**: The statistically significant interaction between period and exam type (p=0.022) confirms that gender integration affected academic levels differently. The decline in IGCSE performance coupled with improvement in A Level results could indicate:
+   - Resource reallocation during transition
+   - Different adaptation rates among student age groups
+   - Potential benefits of gender diversity in advanced academic settings
+   - Possible changes in admission standards or student demographics
+
+4. **Sixth Form Stability**: The relative stability in sixth form enrollment despite overall demographic changes suggests institutional capacity constraints or deliberate enrollment management at upper levels.
+
+These findings align with educational research suggesting that institutional transitions often produce variable outcomes across different metrics and student populations. The mixed academic results highlight that integration processes require careful management, particularly in supporting foundation-level students during the transition.
+
+## Recommendations
+
+Based on this analysis, I recommend the following for educational institutions considering or implementing gender integration:
+
+1. **Anticipate Demographic Shifts**: Prepare for potential changes in gender balance and overall enrollment patterns. Monitor male enrollment rates and develop strategies to maintain appeal to both genders.
+
+2. **Target Support for Foundation Levels**: Provide additional academic support specifically for lower examination levels (e.g., IGCSE), where integration appears to have more challenging impacts.
+
+3. **Leverage Advanced Level Benefits**: Capitalize on the potential positive effects of gender diversity at advanced academic levels, which may benefit from mixed-gender learning environments.
+
+4. **Implement Phased Integration**: Consider a gradual approach to integration that allows for adaptation at each academic level.
+
+5. **Monitor Key Metrics**: Establish systems to track enrollment, academic performance, and student satisfaction throughout the transition process.
+
+6. **Prepare for Increased Variability**: Build flexibility into planning to accommodate greater variability in key metrics during the transition period.
+
+## Limitations of the Study
+
+This analysis has several limitations that should be considered when interpreting the results:
+
+1. **Small Sample Size**: With only 6 pre-integration and 7 post-integration time points, statistical power is limited, potentially obscuring real effects.
+
+2. **Potential Confounding Factors**: The analysis could not control for other factors that might have influenced outcomes during this period, such as:
+   - Changes in school leadership or teaching staff
+   - Curriculum or assessment changes
+   - Broader educational trends in Zimbabwe
+   - Economic or social factors affecting enrollment
+
+3. **Limited Variables**: The analysis focuses on enrollment and academic performance but lacks data on other important factors such as:
+   - Student satisfaction
+   - Teacher perspectives
+   - Classroom dynamics
+   - Extracurricular participation
+
+4. **Short Post-Integration Timeline**: Seven years may be insufficient to observe the full long-term effects of gender integration.
+
+5. **Correlation vs. Causation**: While advanced techniques like difference-in-differences strengthen causal claims, definitive causal relationships remain challenging to establish with observational data.
+
+## How to View the Complete Analysis
+
+The full Jupyter notebook with detailed code and additional visualizations is available:
+
+[View this analysis in nbviewer](https://nbviewer.org/github/OlidiaTL/Expedia/blob/main/Expedia.ipynb)
 

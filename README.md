@@ -425,44 +425,6 @@ The analysis of Falcon College's gender integration reveals several important pa
 
 These findings align with educational research suggesting that institutional transitions often produce variable outcomes across different metrics and student populations. The mixed academic results highlight that integration processes require careful management, particularly in supporting foundation-level students during the transition.
 
-## Recommendations
-
-Based on this analysis, I recommend the following for educational institutions considering or implementing gender integration:
-
-1. **Anticipate Demographic Shifts**: Prepare for potential changes in gender balance and overall enrollment patterns. Monitor male enrollment rates and develop strategies to maintain appeal to both genders.
-
-2. **Target Support for Foundation Levels**: Provide additional academic support specifically for lower examination levels (e.g., IGCSE), where integration appears to have more challenging impacts.
-
-3. **Leverage Advanced Level Benefits**: Capitalize on the potential positive effects of gender diversity at advanced academic levels, which may benefit from mixed-gender learning environments.
-
-4. **Implement Phased Integration**: Consider a gradual approach to integration that allows for adaptation at each academic level.
-
-5. **Monitor Key Metrics**: Establish systems to track enrollment, academic performance, and student satisfaction throughout the transition process.
-
-6. **Prepare for Increased Variability**: Build flexibility into planning to accommodate greater variability in key metrics during the transition period.
-
-## Limitations of the Study
-
-This analysis has several limitations that should be considered when interpreting the results:
-
-1. **Small Sample Size**: With only 6 pre-integration and 7 post-integration time points, statistical power is limited, potentially obscuring real effects.
-
-2. **Potential Confounding Factors**: The analysis could not control for other factors that might have influenced outcomes during this period, such as:
-   - Changes in school leadership or teaching staff
-   - Curriculum or assessment changes
-   - Broader educational trends in Zimbabwe
-   - Economic or social factors affecting enrollment
-
-3. **Limited Variables**: The analysis focuses on enrollment and academic performance but lacks data on other important factors such as:
-   - Student satisfaction
-   - Teacher perspectives
-   - Classroom dynamics
-   - Extracurricular participation
-
-4. **Short Post-Integration Timeline**: Seven years may be insufficient to observe the full long-term effects of gender integration.
-
-5. **Correlation vs. Causation**: While advanced techniques like difference-in-differences strengthen causal claims, definitive causal relationships remain challenging to establish with observational data.
-
 ## How to View the Complete Analysis
 
 The full Jupyter notebook with detailed code and additional visualizations is available:
